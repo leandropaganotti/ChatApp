@@ -7,14 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>586</width>
-    <height>586</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>ChatApp</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="sendbtn">
+   <widget class="QPushButton" name="send">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>474</x>
@@ -28,6 +31,9 @@
     </property>
    </widget>
    <widget class="QTextEdit" name="message">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -37,7 +43,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="connect">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -51,9 +57,12 @@
     </property>
    </widget>
    <widget class="QComboBox" name="users">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>370</x>
       <y>50</y>
       <width>201</width>
       <height>27</height>
@@ -89,7 +98,7 @@
    <widget class="QLineEdit" name="username">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>460</x>
       <y>10</y>
       <width>113</width>
       <height>27</height>
@@ -99,7 +108,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>356</x>
+      <x>376</x>
       <y>15</y>
       <width>81</width>
       <height>20</height>
@@ -112,7 +121,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>11</x>
+      <x>341</x>
       <y>54</y>
       <width>31</width>
       <height>17</height>
@@ -123,6 +132,9 @@
     </property>
    </widget>
    <widget class="QTextEdit" name="history">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>

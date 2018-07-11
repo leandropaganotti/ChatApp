@@ -16,6 +16,7 @@ public:
     ~ChatClient();
     bool connect();
     void writeTo(const char*msg, size_t to);
+    int getUserId(){return userid;}
     // TcpObserver interface
 signals:
     void allUsers(QString);

@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QStringList>
 #include <QDebug>
+#include <QMessageBox>
+#include <QKeyEvent>
 
 std::string timestamp2string(std::time_t timestamp)
 {
@@ -23,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->username->setFocus();
+    ui->message->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -30,8 +34,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_sendbtn_clicked()
+void MainWindow::on_send_clicked()
 {
+
+    if (ui->users->currentText() == "")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please inform a user to send message");
+        msgBox.exec();
+        return;
+    }
+
     chatclient->writeTo(ui->message->toPlainText().toStdString().c_str(), ui->users->currentData().toInt());
 
 
@@ -44,15 +57,38 @@ void MainWindow::on_sendbtn_clicked()
     ui->message->clear();
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_connect_clicked()
 {
+    if (ui->username->text().trimmed() == "")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please inform your username");
+        msgBox.exec();
+        ui->username->setFocus();
+        return;
+    }
+
     chatclient.reset(new ChatClient(ui->host->text(), ui->port->text().toInt(), ui->username->text() ));
     ui->users->clear();
     connect(chatclient.get(), SIGNAL(allUsers(QString)), this, SLOT(on_chatUsers(QString)));
     connect(chatclient.get(), SIGNAL(newMessage(QString)), this, SLOT(on_newMessage(QString)));
     connect(chatclient.get(), SIGNAL(newUser(QString)), this, SLOT(on_newUser(QString)));
     connect(chatclient.get(), SIGNAL(userRemoved(QString)), this, SLOT(on_userRemoved(QString)));
-    chatclient->connect();
+    if(!chatclient->connect())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Connection failed");
+        msgBox.exec();
+        ui->username->setFocus();
+    }
+    else
+    {
+        ui->send->setEnabled(true);
+        ui->history->setEnabled(true);
+        ui->users->setEnabled(true);
+        ui->message->setEnabled(true);
+        ui->message->setFocus();
+    }
 }
 
 void MainWindow::on_chatUsers(QString str)
@@ -62,7 +98,8 @@ void MainWindow::on_chatUsers(QString str)
 
     for(int i = 1; i < list.size()-1; i+=2)
     {
-        ui->users->addItem(list[i+1].trimmed(), list[i].toInt());
+        if(list[i].toInt()!=chatclient->getUserId())
+            ui->users->addItem(list[i+1].trimmed(), list[i].toInt());
     }
 }
 
@@ -104,3 +141,22 @@ void MainWindow::on_userRemoved(QString)
 
 }
 
+void MainWindow::on_username_returnPressed()
+{
+    if(ui->username->text().trimmed() != "")
+        on_connect_clicked();
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == ui->message && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() == Qt::Key_Return)
+        {
+            on_send_clicked();
+            return true;
+        }
+    }
+    return false;
+}

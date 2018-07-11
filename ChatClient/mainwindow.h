@@ -18,9 +18,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_sendbtn_clicked();
+    void on_send_clicked();
 
-    void on_pushButton_clicked();
+    void on_connect_clicked();
 
     void on_chatUsers(QString);
 
@@ -30,10 +30,14 @@ private slots:
 
     void on_userRemoved(QString);
 
+    void on_username_returnPressed();
+
 private:
     Ui::MainWindow *ui;
 
     std::unique_ptr<ChatClient> chatclient;
+
+    bool eventFilter(QObject *object, QEvent *event);
 };
 
 
